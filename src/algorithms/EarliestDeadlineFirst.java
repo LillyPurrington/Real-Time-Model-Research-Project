@@ -27,8 +27,30 @@ public class EarliestDeadlineFirst extends Algorithm {
 		 * all be fine, except the way my program is set up, I want to show the deadline misses when it is unsolvable. If I just ended when I
 		 * found that utilization is > 1, I would then need to go back and do what I was going to do anyway to find where excactly it would mess up.
 		 * So while it would be possible to calculate the utilization and then determine whether it is posiblile to solve, doing that would actually be 
-		 * slower in this case. So I am just writting this here.
+		 * slower in this case. So I will just comment it out.
 		 */
+		/*
+		 * int hyperperiod = 0;
+		for (Task currentTask : schedule) {
+			if (currentTask.getPeriod() > hyperperiod) {
+				hyperperiod = currentTask.getPeriod();
+			}
+		}
+		
+		float utilization = 0;
+		for (Task currentTask : schedule) {
+			for (Job currentJob: currentTask){
+				utilization += ((float) currentJob.get(period))/hyperperiod;
+			}
+		}
+		
+		if (utiliztion > 1){
+			return Schedule.UNSOLVABLE;
+		}
+		 * 
+		 * 
+		 */
+		
 		
 		
 		long startTime = System.currentTimeMillis();
