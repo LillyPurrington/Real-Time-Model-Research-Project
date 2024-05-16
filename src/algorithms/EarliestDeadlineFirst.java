@@ -70,7 +70,7 @@ public class EarliestDeadlineFirst extends Algorithm {
 			if (currentJob.getEndPoint() > currentJob.getDeadline()) {
 				return Schedule.UNSOLVABLE;
 			}
-			if ((System.currentTimeMillis() - startTime) / 100 > timeOutTimeSeconds) {
+			if ((System.currentTimeMillis() - startTime) / 1000 > timeOutTimeSeconds) {
 				return Schedule.TIMED_OUT;
 			}
 		}
