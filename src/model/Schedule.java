@@ -12,7 +12,7 @@ public class Schedule {
 	public static final int TIMED_OUT = -1;
 	public static final int UNSOLVABLE = -2;
 	public static final int SOLVED = 1;
-	
+	public static final int UNSOLVABLE_OVER_UTILIZATION = -3;
 	private boolean infinite = false;
 	private ArrayList<Task> schedule = new ArrayList<Task>();
 	
@@ -49,8 +49,10 @@ public class Schedule {
 			Output.textDisplay("This schedule has not been solved.");
 		}else if (state == TIMED_OUT) {
 			Output.textDisplay("The time limit set was reached.");
+		}else if (state == UNSOLVABLE_OVER_UTILIZATION) {
+			Output.textDisplay("These tasks can not be scheduled because the utilization is > 1.");
 		}else if (state == UNSOLVABLE) {
-			String display = "These task can not be scheduled:\n";
+			String display = "These tasks can not be scheduled:\n";
 			
 			for (int currentTask = 0; currentTask < schedule.size(); currentTask++) {
 				display += "\nT" + (currentTask + 1) + ": runs during time:";
@@ -79,14 +81,12 @@ public class Schedule {
 			
 			if (infinite) {
 				
-				int hyperperiod = 0;
 				int latest = 0;
+				ArrayList<Integer> infiniteJobs = new ArrayList<Integer>();
 				Schedule infinite = new Schedule();
 				for (Task currentTask : schedule) {
 					if (currentTask.isInfinite()) {
-						if (currentTask.getPeriod() > hyperperiod) {
-							hyperperiod = currentTask.getPeriod();
-						}
+						infiniteJobs.add(currentTask.getPeriod());
 					}
 					
 					for (Job currentJob : currentTask.getJobs()) {
@@ -95,6 +95,8 @@ public class Schedule {
 						}
 					}
 				}
+				
+				int hyperperiod = LeastCommonMultipleFinder.FindLeastCommonMultipleOfArray(infiniteJobs);
 				
 				display += "\nEvery hyperperiod lasting " + hyperperiod + " units after " + latest + " units would look like:";
 

@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import model.Job;
 import model.JobDeadlineComparator;
+import model.LeastCommonMultipleFinder;
 import model.Schedule;
 import model.Task;
 
@@ -21,37 +22,22 @@ public class EarliestDeadlineFirst extends Algorithm {
 	@Override
 	public int solve(ArrayList<Task> schedule) {
 		
-		/*
-		 * So since this is for a project, there are some required parts. One part that is required is using equations to show that a 
-		 * particular set of jobs is unschedulable and than ending the solve there. I will do that by calculating utilization. This would
-		 * all be fine, except the way my program is set up, I want to show the deadline misses when it is unsolvable. If I just ended when I
-		 * found that utilization is > 1, I would then need to go back and do what I was going to do anyway to find where excactly it would mess up.
-		 * So while it would be possible to calculate the utilization and then determine whether it is posiblile to solve, doing that would actually be 
-		 * slower in this case. So I will just comment it out.
-		 */
-		/*
-		 * int hyperperiod = 0;
+		ArrayList<Integer> periodArray = new ArrayList<Integer>();
 		for (Task currentTask : schedule) {
-			if (currentTask.getPeriod() > hyperperiod) {
-				hyperperiod = currentTask.getPeriod();
-			}
+			periodArray.add(currentTask.getPeriod());
 		}
+		int hyperperiod = LeastCommonMultipleFinder.FindLeastCommonMultipleOfArray(periodArray);
 		
 		float utilization = 0;
 		for (Task currentTask : schedule) {
-			for (Job currentJob: currentTask){
-				utilization += ((float) currentJob.get(period))/hyperperiod;
+			for (Job currentJob: currentTask.getJobs()){
+				utilization += ((float) currentJob.getCost()/hyperperiod);
 			}
 		}
 		
-		if (utiliztion > 1){
-			return Schedule.UNSOLVABLE;
+		if (utilization > 1){
+			return Schedule.UNSOLVABLE_OVER_UTILIZATION;
 		}
-		 * 
-		 * 
-		 */
-		
-		
 		
 		long startTime = System.currentTimeMillis();
 		ArrayList<Job> jobs = new ArrayList<Job>();
@@ -70,7 +56,7 @@ public class EarliestDeadlineFirst extends Algorithm {
 			if (currentJob.getEndPoint() > currentJob.getDeadline()) {
 				return Schedule.UNSOLVABLE;
 			}
-			if ((System.currentTimeMillis() - startTime) / 1000 > timeOutTimeSeconds) {
+			if ((System.currentTimeMillis() - startTime) / 100 > timeOutTimeSeconds) {
 				return Schedule.TIMED_OUT;
 			}
 		}
